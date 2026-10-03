@@ -17,7 +17,6 @@
     along with Flycast.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "sh4_cycles.h"
-#include "modules/mmu.h"
 
 int Sh4Cycles::countCycles(u16 op)
 {
@@ -64,8 +63,14 @@ int Sh4Cycles::countCycles(u16 op)
 	};
 	if (isMemOp[opcode->ex_type])
 	{
+		// Don't charge extra cycles when the MMU is enabled: a UTLB hit is free on
+		// the SH4 and TLB misses are already accounted for by the MMU code.
+		// The former 5-cycle penalty made WinCE games 1.5-2x slower than needed
+		// (first 3 memory ops of nearly every block): the Kita He opening movie
+		// decoder couldn't keep up with 30 fps, so the AVI decompressor dropped
+		// frames until the next key frame (20 seconds of frozen video).
 		if (++memOps < 4)
-			cycles = mmu_enabled() ? 5 : 2;
+			cycles = 2;
 	}
 	// TODO only for mem read?
 #endif
