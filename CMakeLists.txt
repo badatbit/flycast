@@ -105,6 +105,7 @@ option(ENABLE_GDB_SERVER "Build with GDB debugging support" OFF)
 option(ENABLE_DC_PROFILER "Build with support for target machine (SH4) profiler" OFF)
 option(ENABLE_FC_PROFILER "Build with support for host app (Flycast) profiler" OFF)
 option(USE_DISCORD "Use Discord Presence API" OFF)
+option(USE_RACHIEVEMENTS "Build with RetroAchievements support" ON)
 option(USE_LIBCDIO "Use libcdio for CDROM access" OFF)
 
 if(IOS AND NOT LIBRETRO)
@@ -1035,7 +1036,7 @@ if(NOT LIBRETRO)
 			core/linux-dist/x11_keyboard.h)
 endif()
 
-if(NOT LIBRETRO)
+if(NOT LIBRETRO AND USE_RACHIEVEMENTS)
 	target_sources(${PROJECT_NAME} PRIVATE
 			core/deps/rcheevos/src/rc_client_raintegration.c
 			core/deps/rcheevos/src/rc_client.c
